@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Empresas, Documento
+from .models import Empresas, Documento, Metricas
 from django.contrib import messages
 from django.contrib.messages import constants
 # Create your views here.
@@ -117,3 +117,19 @@ def excluir_doc(request, id):
     documento.delete()
     messages.add_message(request, constants.SUCCESS, 'Documento deletado com sucesso')
     return redirect(f'/empresarios/empresas/{documento.empresa.id}')
+
+def add_metrica(request, id):
+    empresa = Empresas.objects.get(id=id)
+    titulo = request.POST.get("titulo")
+    valor = request.POST.get("valor")
+
+    metrica = Metricas(
+        empresa = empresa,
+        titulo = titulo,
+        valor = valor
+    )
+
+    metrica.save()
+
+    messages.add_message(request, constants.SUCCESS, "Métrica cadastrada com sucesso.")
+    return redirect(f'/empresarios/empresas/{empresa.id}')
